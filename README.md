@@ -123,6 +123,74 @@ This compact structure reduces computational demands while retaining sufficient 
 
 By distilling knowledge from Augmented FinBERT, TinyFinBERT achieves strong performance in financial sentiment analysis with a significantly smaller footprint.
 
+## TinyFinBERT Distillation Process Overview
+
+### Method
+- **Distillation Technique**: Adopts the Transformer distillation method from [Jiao et al., 2019](https://arxiv.org/abs/1909.10351), designed for transferring knowledge from a larger teacher network (N layers) to a smaller student network (M layers).
+- **Layer Mapping**: Utilizes a layer correspondence mapping `n = g(m)`, where the m-th student layer learns from the g(m)-th teacher layer.
+
+### Objective Function
+- **Distillation Objective**: Defined as:
+<img src="https://miro.medium.com/v2/resize:fit:974/1*6pHKhJ7HpOuKjpXObtERoA.png" width="371" height="237" alt="Knowledge Distillation Objective Function">
+
+### Distillation Components
+- **Embedding-layer Distillation**: Similar to hidden states, using MSE with a transformation matrix `W_e` for embeddings.
+- **Attention-based Distillation**: Focuses on multi-head attention matrices using mean squared error (MSE) between the student's and teacher's attention matrices.
+- **Hidden States-based Distillation**: Involves distilling the hidden states of Transformer layers with a learnable transformation matrix `W_h` for alignment.
+- **Prediction-layer Distillation**: Utilizes soft cross-entropy loss to align the student’s and teacher's logits, adjusted by a temperature scaling factor `t`.
+- **Unified Distillation Loss**: Consolidates the distillation objectives across different layers to ensure cohesive and targeted knowledge transfer.
+
+### Process Overview and Data Usage
+- **Datasets Used**: Financial Phrasebank dataset along with augmented data from GPT-3.5T and GPT-4o.
+- **Teacher Model**: Augmented FinBERT.
+- **Student Model (TinyFinBERT)**: Mirrors TinyBERT with 4 Transformer layers, a hidden size of 312, a feedforward network size of 1200, and 12 attention heads, totaling 14.5 million parameters.
+
+### Layer Mapping and Strategy
+- **Mapping Function**: `g(m) = 3 × m`, chosen to maximize coverage with fewer student layers, enabling effective capture of essential features despite the reduced scale.
+
+### Distillation Objectives and Parameters
+- **Temperature**: 1 (for direct probability transfer and maintaining fidelity to the teacher model’s outputs).
+- **Layer Contribution Weighting**: Equal (λ = 1), simplifying the loss computation and focusing on balanced knowledge transfer.
+- **Data Utilized**: Original training data plus unlabelled augmented data from GPT 3.5T and GPT 4o.
+
+### Distillation Phases
+- **Intermediate Layer Distillation**:
+  - **Duration**: 20 epochs
+  - **Batch Size**: 32
+  - **Learning Rate**: 5e-5
+  - **Max Sequence Length**: 64 tokens
+  - **Warm-Up Proportion**: 0.1
+  - **Focus**: Adapting student model’s intermediate representations to closely mirror those of the teacher, leveraging augmented data.
+
+- **Prediction Layer Distillation**:
+  - **Duration**: 3 epochs
+  - **Other Parameters**: Same as Intermediate Layer Distillation
+  - **Focus**: Refining the output layer’s decision-making process to replicate the teacher model.
+
+### Comprehensive Approach
+- **Two-Phase Distillation**: By dividing the distillation into two distinct phases, TinyFinBERT learns both robust deep-layer features and fine-tunes its output predictions, ensuring close alignment with the Augmented FinBERT and enhancing its performance in complex financial sentiment analysis tasks.
+
+### Process Overview and Data Usage
+- **Datasets Used**: Financial Phrasebank dataset alongside unlabelled data augmented by GPT-3.5T and GPT-4o
+- **Teacher Model**: Augmented FinBERT
+- **Student Model**: TinyFinBERT
+  - **Transformer Layers**: 4
+  - **Hidden Size**: 312
+  - **Feedforward Network Size**: 1200
+  - **Attention Heads**: 12
+  - **Total Parameters**: 14.5 million
+
+### Layer Mapping and Strategy
+
+
+
+
+
+
+### Comprehensive Approach
+By dividing the distillation into two distinct phases, TinyFinBERT not only learns robust features from the deeper layers of Augmented FinBERT but also fine-tunes its output predictions to closely align with those of the teacher model. This structured approach optimizes the transfer of nuanced understanding from Augmented FinBERT, enhancing TinyFinBERT’s performance in complex financial sentiment analysis tasks.
+
+
 ## Contribution of This Work
 This work presents several novel contributions to the field of domain-specific language modeling:
 
