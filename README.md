@@ -26,7 +26,7 @@ This thesis utilizes GPT-4 Omni for dataset augmentation and employs a structure
 ### Knowledge Distillation
 - **Logit Matching**: Ensures TinyFinBERT's predictions align with those of FinBERT.
 - **Intermediate Layer Transfer**: Promotes feature alignment across models to retain crucial financial insights.
-For more technical details of the Knowledge Distillation process refer [below](#KD-id)
+For more technical details of the Knowledge Distillation process refer [below](README.md#tinyfinbert-distillation-process-overview)
 
 ### Model Training and Evaluation
 - **Training**: Integrates both original and synthetic datasets.
@@ -111,7 +111,7 @@ This compact structure reduces computational demands while retaining sufficient 
 ### TinyFinBERT
 **TinyFinBERT** shares the same architecture as TinyBERT and is enhanced through distillation with knowledge from Augmented FinBERT with a significantly smaller footprint. 
 
-## TinyFinBERT Distillation Process Overview {#KD-id}
+## TinyFinBERT Distillation Process Overview
 ### Method
 - **Distillation Technique**: Adopts the Transformer distillation method from [Jiao et al., 2019](https://arxiv.org/abs/1909.10351), designed for transferring knowledge from a larger teacher network (N layers) to a smaller student network (M layers).
 - **Layer Mapping**: Utilizes a layer correspondence mapping `n = g(m)`, where the m-th student layer learns from the g(m)-th teacher layer.
